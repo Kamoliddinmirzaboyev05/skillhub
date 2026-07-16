@@ -6,10 +6,11 @@ Qoida: bitta faza = bitta Antigravity iteratsiyasi. Faza tugamaguncha keyingisig
 
 ## Faza 0 — Fundament
 - [x] Repo scaffolding (backend NestJS, 3 frontend Vite app)
-- [ ] Prisma schema: User(role enum: STUDENT/MENTOR/SUPERADMIN), Course, Module, Lesson, Enrollment, Payment, Payout, Review, Category — FK indexlar bilan
+- [x] Prisma schema: User(role enum: STUDENT/MENTOR/SUPERADMIN), Course, Module, Lesson, Enrollment, Payment, Payout, Review, Category, Discussion — FK indexlar bilan
 - [ ] `.env` shablon: DATABASE_URL, JWT_SECRET, BUNNY_*, TELEGRAM_BOT_TOKEN, PAYMENT_* kalitlari
-- [ ] JWT auth (access+refresh), bcrypt/argon2 hash, RBAC guard (Student/Mentor/Superadmin)
+- [x] JWT auth (register/login, bcrypt), RBAC guard (@Roles decorator + RolesGuard)
 - [ ] Global error handling + validation pipe (class-validator)
+- [ ] Refresh token oqimi (hozircha faqat access token ko'rinadi — tekshirish kerak)
 
 ## Faza 1 — Student: Marketplace (public)
 - [ ] Landing page (hero, search, kategoriya pill, carousel)
