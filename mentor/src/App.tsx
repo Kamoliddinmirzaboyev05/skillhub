@@ -4,6 +4,7 @@ import { useAuthStore } from './store/useAuthStore';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import CreateCourse from './pages/CreateCourse';
+import Financials from './pages/Financials';
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ export default function App() {
                 <p className="mt-2 text-gray-600">Rol: {user?.role}</p>
                 <div className="flex gap-4 mt-4">
                   <Link to="/courses/new" className="px-4 py-2 bg-blue-600 text-white rounded-md">Yangi Kurs Yaratish</Link>
+                  <Link to="/financials" className="px-4 py-2 bg-green-600 text-white rounded-md">Moliyaviy Holat</Link>
                   <button 
                     onClick={() => useAuthStore.getState().logout()}
                     className="px-4 py-2 bg-red-600 text-white rounded-md"
@@ -45,6 +47,12 @@ export default function App() {
           <Route path="/courses/new" element={
             <ProtectedRoute>
               <CreateCourse />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/financials" element={
+            <ProtectedRoute>
+              <Financials />
             </ProtectedRoute>
           } />
           

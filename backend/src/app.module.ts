@@ -12,9 +12,10 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { AdminModule } from './admin/admin.module';
 import { TelegramModule } from './telegram/telegram.module';
+import { PayoutsModule } from './payouts/payouts.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, CoursesModule, ModulesModule, LessonsModule, MediaModule, QuizzesModule, CertificatesModule, AdminModule, TelegramModule],
+  imports: [PrismaModule, UsersModule, AuthModule, CoursesModule, ModulesModule, LessonsModule, MediaModule, QuizzesModule, CertificatesModule, AdminModule, TelegramModule, PayoutsModule],
   controllers: [AppController],
   providers: [AppService],
 })

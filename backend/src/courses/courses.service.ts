@@ -54,30 +54,42 @@ export class CoursesService {
     const course = await this.prisma.course.findUnique({ where: { id: courseId } });
     if (!course) throw new NotFoundException('Course not found');
 
-    const enrollment = await this.prisma.enrollment.create({
-      data: {
-        courseId,
-        studentId,
-        status: 'ACTIVE'
-      },
-      include: { student: true }
-    });
-
-    // Mock payment successful, create payment record
-    await this.prisma.payment.create({
-      data: {
-        studentId,
-        courseId,
-        amount: course.price,
-        provider: 'MOCK_PAY',
-        status: 'SUCCESS'
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Check if already enrolled to prevent double charge
+      const existing = await tx.enrollment.findUnique({
+        where: { studentId_courseId: { studentId, courseId } }
+      });
+      if (existing) {
+        throw new Error('You are already enrolled in this course.');
       }
+
+      // 2. Create payment record
+      await tx.payment.create({
+        data: {
+          studentId,
+          courseId,
+          amount: course.price,
+          provider: 'MOCK_PAY',
+          status: 'SUCCESS'
+        }
+      });
+
+      // 3. Create enrollment
+      const enrollment = await tx.enrollment.create({
+        data: {
+          courseId,
+          studentId,
+          status: 'ACTIVE'
+        },
+        include: { student: true }
+      });
+
+      if (enrollment.student.telegramId) {
+        // We can safely call telegram service outside transaction or fire-and-forget inside
+        this.telegramService.sendPurchaseReceipt(enrollment.student.telegramId, course.title, course.price).catch(() => {});
+      }
+
+      return enrollment;
     });
-
-    if (enrollment.student.telegramId) {
-      await this.telegramService.sendPurchaseReceipt(enrollment.student.telegramId, course.title, course.price);
-    }
-
-    return enrollment;
   }
 }

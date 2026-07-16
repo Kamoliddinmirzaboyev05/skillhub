@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Courses from './pages/Courses';
 import Users from './pages/Users';
+import Payouts from './pages/Payouts';
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
           <Link to="/dashboard" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">📊 Dashboard</Link>
           <Link to="/courses" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">📚 Kurslar</Link>
           <Link to="/users" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">👥 Foydalanuvchilar</Link>
+          <Link to="/payouts" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">💸 To'lovlar (Payouts)</Link>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-zinc-700">
           <button 
@@ -55,6 +57,7 @@ export default function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
+          <Route path="/payouts" element={<ProtectedRoute><Payouts /></ProtectedRoute>} />
           
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>

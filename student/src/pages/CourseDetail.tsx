@@ -1,9 +1,40 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useAuthStore } from '../store/useAuthStore';
+import { useState } from 'react';
 
 export default function CourseDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const token = useAuthStore(state => state.token);
+  const [loading, setLoading] = useState(false);
+
+  const handleEnroll = async () => {
+    if (!token) {
+      alert("Avval tizimga kiring!");
+      return navigate('/login');
+    }
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`http://localhost:3000/courses/${id}/enroll`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        alert("To'lov muvaffaqiyatli amalga oshirildi!");
+        navigate(`/learn/${id}`);
+      } else {
+        const errorData = await res.json();
+        alert(errorData.message || "Xatolik yuz berdi");
+      }
+    } catch (err) {
+      alert("Tarmoq xatosi!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -40,18 +71,15 @@ export default function CourseDetail() {
             </div>
             <CardContent className="p-6 space-y-4">
               <p className="text-3xl font-bold">500,000 UZS</p>
-              <Button className="w-full text-lg h-12">Sotib olish (Payme)</Button>
+              <Button onClick={handleEnroll} disabled={loading} className="w-full text-lg h-12">
+                {loading ? 'Kuting...' : 'Sotib olish (Payme)'}
+              </Button>
               
               <div className="pt-4 border-t space-y-2 text-sm text-gray-600">
                 <p>✅ Umrbod ruxsat (Lifetime)</p>
                 <p>✅ DRM Himoya</p>
                 <p>✅ Sertifikat</p>
               </div>
-
-              {/* Temporary link for testing LMS */}
-              <Link to={`/learn/${id}`} className="block mt-4">
-                <Button variant="outline" className="w-full">Tizimga kirib o'qish (Test)</Button>
-              </Link>
             </CardContent>
           </Card>
         </div>
