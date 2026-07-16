@@ -242,6 +242,15 @@ model Discussion {
   @@index([parentId])
 }
 
+model Setting {
+  id            String   @id @default("singleton")
+  commissionRate Float   @default(30.0) // Platform cut 30%
+  heroTitle     String?
+  heroSubtitle  String?
+  faqJson       String?  // JSON formatted array of FAQs
+  updatedAt     DateTime @updatedAt
+}
+
 model Quiz {
   id        String        @id @default(uuid())
   title     String

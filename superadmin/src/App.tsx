@@ -7,6 +7,8 @@ import Dashboard from './pages/Dashboard';
 import Courses from './pages/Courses';
 import Users from './pages/Users';
 import Payouts from './pages/Payouts';
+import Settings from './pages/Settings';
+import Categories from './pages/Categories';
 
 const queryClient = new QueryClient();
 
@@ -22,11 +24,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
           <h2 className="text-2xl font-bold text-blue-600">ProAcademy</h2>
           <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Superadmin</p>
         </div>
-        <nav className="flex-1 px-4 space-y-2 mt-4">
+        <nav className="flex-1 px-4 space-y-2 mt-4 overflow-y-auto">
           <Link to="/dashboard" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">📊 Dashboard</Link>
           <Link to="/courses" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">📚 Kurslar</Link>
           <Link to="/users" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">👥 Foydalanuvchilar</Link>
+          <Link to="/categories" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">📂 Kategoriyalar</Link>
           <Link to="/payouts" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">💸 To'lovlar (Payouts)</Link>
+          <Link to="/settings" className="block px-4 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-zinc-700">⚙️ Sozlamalar</Link>
         </nav>
         <div className="p-4 border-t border-gray-200 dark:border-zinc-700">
           <button 
@@ -58,6 +62,8 @@ export default function App() {
           <Route path="/courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
           <Route path="/payouts" element={<ProtectedRoute><Payouts /></ProtectedRoute>} />
+          <Route path="/categories" element={<ProtectedRoute><Categories /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>

@@ -24,32 +24,41 @@ export class AuthService {
       fullName: dto.fullName,
     });
 
-    const payload = { email: user.email, sub: user.id, role: user.role };
-    return {
-      access_token: this.jwtService.sign(payload),
-      user: {
-        id: user.id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-      }
-    };
+    return this.generateTokens(user);
   }
 
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
+    if (!user || !(await bcrypt.compare(dto.password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return this.generateTokens(user);
+  }
+
+  async refresh(refreshToken: string) {
+    // Basic implementation: fetch user with this refresh token
+    // A robust app should also verify the token signature if it's a JWT.
+    // Here we are using a UUID or a long random string.
+    const user = await this.usersService.findByRefreshToken(refreshToken);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Invalid refresh token');
     }
+    return this.generateTokens(user);
+  }
 
-    const isPasswordValid = await bcrypt.compare(dto.password, user.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
+  private async generateTokens(user: any) {
     const payload = { email: user.email, sub: user.id, role: user.role };
+    const accessToken = this.jwtService.sign(payload);
+    
+    // Generate simple refresh token (could also be a JWT with longer expiry)
+    const refreshToken = require('crypto').randomBytes(40).toString('hex');
+    
+    // Save to DB
+    await this.usersService.update(user.id, { refreshToken });
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: accessToken,
+      refresh_token: refreshToken,
       user: {
         id: user.id,
         email: user.email,
