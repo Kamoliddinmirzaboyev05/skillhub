@@ -42,4 +42,10 @@ export class CoursesController {
   remove(@Param('id') id: string, @Request() req: any) {
     return this.coursesService.remove(id, req.user.id);
   }
+
+  @Post(':id/enroll')
+  enrollStudent(@Param('id') id: string, @Request() req: any) {
+    // Both student and superadmin can enroll
+    return this.coursesService.enrollStudent(id, req.user.id);
+  }
 }

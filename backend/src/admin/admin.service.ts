@@ -1,10 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { TelegramService } from '../telegram/telegram.service';
 import { CourseStatus } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private telegramService: TelegramService
+  ) {}
 
   async getStats() {
     const usersCount = await this.prisma.user.count();
@@ -29,17 +33,31 @@ export class AdminService {
   }
 
   async approveCourse(id: string) {
-    return this.prisma.course.update({
+    const course = await this.prisma.course.update({
       where: { id },
-      data: { status: 'PUBLISHED' }
+      data: { status: 'PUBLISHED' },
+      include: { mentor: true }
     });
+    
+    if (course.mentor.telegramId) {
+      await this.telegramService.sendCourseApprovedAlert(course.mentor.telegramId, course.title);
+    }
+    
+    return course;
   }
 
   async rejectCourse(id: string) {
-    return this.prisma.course.update({
+    const course = await this.prisma.course.update({
       where: { id },
-      data: { status: 'REJECTED' }
+      data: { status: 'REJECTED' },
+      include: { mentor: true }
     });
+
+    if (course.mentor.telegramId) {
+      await this.telegramService.sendCourseRejectedAlert(course.mentor.telegramId, course.title);
+    }
+
+    return course;
   }
 
   async getUsers() {
