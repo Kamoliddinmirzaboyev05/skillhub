@@ -49,33 +49,35 @@ enum PayoutStatus {
 }
 
 model User {
-  id             String       @id @default(uuid())
-  email          String       @unique
-  password       String
-  fullName       String?
-  role           Role         @default(STUDENT)
-  telegramId     String?      @unique
-  profilePic     String?
-  refreshToken   String?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  fullName     String?
+  role         Role     @default(STUDENT)
+  telegramId   String?  @unique
+  profilePic   String?
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  coursesAsMentor Course[]    @relation("CourseMentor")
+  coursesAsMentor Course[]      @relation("CourseMentor")
   enrollments     Enrollment[]
   payments        Payment[]
   payouts         Payout[]
   reviews         Review[]
   discussions     Discussion[]
+  quizAttempts    QuizAttempt[]
+  certificates    Certificate[]
 }
 
 model Category {
-  id        String     @id @default(uuid())
-  name      String
-  slug      String     @unique
-  parentId  String?
-  parent    Category?  @relation("SubCategories", fields: [parentId], references: [id])
-  children  Category[] @relation("SubCategories")
-  courses   Course[]
+  id       String     @id @default(uuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children Category[] @relation("SubCategories")
+  courses  Course[]
 
   @@index([parentId])
 }
@@ -89,70 +91,72 @@ model Course {
   status      CourseStatus @default(DRAFT)
   thumbnail   String?
   promoVideo  String?
-  
-  mentorId    String
-  mentor      User         @relation("CourseMentor", fields: [mentorId], references: [id])
-  
-  categoryId  String
-  category    Category     @relation(fields: [categoryId], references: [id])
-  
-  modules     Module[]
-  enrollments Enrollment[]
-  payments    Payment[]
-  reviews     Review[]
-  discussions Discussion[]
-  
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+
+  mentorId String
+  mentor   User   @relation("CourseMentor", fields: [mentorId], references: [id])
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  modules      Module[]
+  enrollments  Enrollment[]
+  payments     Payment[]
+  reviews      Review[]
+  discussions  Discussion[]
+  quizzes      Quiz[]
+  certificates Certificate[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([mentorId])
   @@index([categoryId])
 }
 
 model Module {
-  id        String   @id @default(uuid())
-  title     String
-  order     Int      @default(0)
-  
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
-  lessons   Lesson[]
+  id    String @id @default(uuid())
+  title String
+  order Int    @default(0)
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
 
   @@index([courseId])
 }
 
 model Lesson {
-  id          String     @id @default(uuid())
-  title       String
-  type        LessonType @default(VIDEO)
-  content     String?    // Text lesson content or quiz JSON
-  videoUrl    String?    // Bunny.net video ID or URL
-  duration    Int        @default(0) // Duration in seconds
-  order       Int        @default(0)
-  isPreview   Boolean    @default(false)
-  
-  moduleId    String
-  module      Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-  
+  id        String     @id @default(uuid())
+  title     String
+  type      LessonType @default(VIDEO)
+  content   String? // Text lesson content or quiz JSON
+  videoUrl  String? // Bunny.net video ID or URL
+  duration  Int        @default(0) // Duration in seconds
+  order     Int        @default(0)
+  isPreview Boolean    @default(false)
+
+  moduleId String
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
   discussions Discussion[]
 
   @@index([moduleId])
 }
 
 model Enrollment {
-  id        String           @id @default(uuid())
+  id        String @id @default(uuid())
   studentId String
-  student   User             @relation(fields: [studentId], references: [id])
-  
-  courseId  String
-  course    Course           @relation(fields: [courseId], references: [id])
-  
-  progress  Float            @default(0) // Percentage 0-100
-  status    EnrollmentStatus @default(ACTIVE)
-  
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  student   User   @relation(fields: [studentId], references: [id])
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+
+  progress Float            @default(0) // Percentage 0-100
+  status   EnrollmentStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([studentId, courseId])
   @@index([studentId])
@@ -160,79 +164,141 @@ model Enrollment {
 }
 
 model Payment {
-  id            String        @id @default(uuid())
-  studentId     String
-  student       User          @relation(fields: [studentId], references: [id])
-  
-  courseId      String
-  course        Course        @relation(fields: [courseId], references: [id])
-  
+  id        String @id @default(uuid())
+  studentId String
+  student   User   @relation(fields: [studentId], references: [id])
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id])
+
   amount        Float
-  provider      String        // e.g. "PAYME", "CLICK", "UZUMPAY"
+  provider      String // e.g. "PAYME", "CLICK", "UZUMPAY"
   status        PaymentStatus @default(PENDING)
   transactionId String?       @unique
-  
-  createdAt     DateTime      @default(now())
+
+  createdAt DateTime @default(now())
 
   @@index([studentId])
   @@index([courseId])
 }
 
 model Payout {
-  id        String       @id @default(uuid())
-  mentorId  String
-  mentor    User         @relation(fields: [mentorId], references: [id])
-  
+  id       String @id @default(uuid())
+  mentorId String
+  mentor   User   @relation(fields: [mentorId], references: [id])
+
   amount    Float
   status    PayoutStatus @default(PENDING)
-  cardInfo  String?      // Masked card or token
+  cardInfo  String? // Masked card or token
   receiptId String?
-  
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([mentorId])
 }
 
 model Review {
-  id        String   @id @default(uuid())
-  rating    Int      @default(5)
-  comment   String?
-  
+  id      String  @id @default(uuid())
+  rating  Int     @default(5)
+  comment String?
+
   studentId String
-  student   User     @relation(fields: [studentId], references: [id])
-  
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
+  student   User   @relation(fields: [studentId], references: [id])
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
-  
+
   @@unique([studentId, courseId])
   @@index([studentId])
   @@index([courseId])
 }
 
 model Discussion {
-  id        String   @id @default(uuid())
-  text      String
-  
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id])
-  
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
-  lessonId  String?
-  lesson    Lesson?  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  
-  parentId  String?
-  parent    Discussion?  @relation("Replies", fields: [parentId], references: [id])
-  replies   Discussion[] @relation("Replies")
-  
+  id   String @id @default(uuid())
+  text String
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessonId String?
+  lesson   Lesson? @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  parentId String?
+  parent   Discussion?  @relation("Replies", fields: [parentId], references: [id])
+  replies  Discussion[] @relation("Replies")
+
   createdAt DateTime @default(now())
 
   @@index([authorId])
   @@index([courseId])
   @@index([lessonId])
   @@index([parentId])
+}
+
+model Quiz {
+  id        String        @id @default(uuid())
+  title     String
+  courseId  String
+  course    Course        @relation(fields: [courseId], references: [id])
+  questions Question[]
+  attempts  QuizAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+model Question {
+  id            String   @id @default(uuid())
+  quizId        String
+  quiz          Quiz     @relation(fields: [quizId], references: [id])
+  text          String
+  options       Option[]
+  correctOption String // ID of the correct Option
+
+  @@index([quizId])
+}
+
+model Option {
+  id         String   @id @default(uuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  text       String
+
+  @@index([questionId])
+}
+
+model QuizAttempt {
+  id        String  @id @default(uuid())
+  quizId    String
+  quiz      Quiz    @relation(fields: [quizId], references: [id])
+  studentId String
+  student   User    @relation(fields: [studentId], references: [id])
+  score     Int
+  passed    Boolean
+
+  createdAt DateTime @default(now())
+
+  @@index([quizId])
+  @@index([studentId])
+}
+
+model Certificate {
+  id        String   @id @default(uuid())
+  verifyId  String   @unique
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  studentId String
+  student   User     @relation(fields: [studentId], references: [id])
+  issuedAt  DateTime @default(now())
+
+  @@index([courseId])
+  @@index([studentId])
 }
