@@ -63,3 +63,4 @@ Qoida: bitta faza = bitta Antigravity iteratsiyasi. Faza tugamaguncha keyingisig
 | Sana | Faza | Holat/eslatma |
 |------|------|----------------|
 | 2026-07-16 | 0 | PLAN.md yaratildi, Antigravity boshqaruvi boshlandi |
+| 2026-07-16 | 0 | Antigravity: tailwind/shadcn/zustand setup + Prisma o'rnatildi, GitHub'ga (skillhub.git) push qilindi. Endi schema.prisma modellari + JWT Auth/RBAC ustida ishlamoqda |
