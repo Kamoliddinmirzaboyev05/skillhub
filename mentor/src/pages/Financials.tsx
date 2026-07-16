@@ -3,9 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '../store/useAuthStore';
 
+interface Payout {
+  id: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
+interface FinancialData {
+  totalRevenue: number;
+  mentorCut: number;
+  availableBalance: number;
+  payouts: Payout[];
+}
+
 export default function Financials() {
   const token = useAuthStore(state => state.token);
-  const [data, setData] = useState({ totalRevenue: 0, mentorCut: 0, availableBalance: 0, payouts: [] });
+  const [data, setData] = useState<FinancialData>({ totalRevenue: 0, mentorCut: 0, availableBalance: 0, payouts: [] });
 
   useEffect(() => {
     // In real app, fetch from /payouts/me
