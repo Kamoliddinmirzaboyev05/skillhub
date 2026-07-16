@@ -1,0 +1,30 @@
+services:
+  proacademy-postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: proacademy
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: proacademy
+    volumes:
+      - proacademy_pgdata:/var/lib/postgresql/data
+    networks:
+      - proacademy_net
+
+  proacademy-api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - proacademy-postgres
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:4000:3000"
+    networks:
+      - proacademy_net
+
+volumes:
+  proacademy_pgdata:
+
+networks:
+  proacademy_net:
