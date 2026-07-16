@@ -10,9 +10,10 @@ import { LessonsModule } from './lessons/lessons.module';
 import { MediaModule } from './media/media.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
 import { CertificatesModule } from './certificates/certificates.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, CoursesModule, ModulesModule, LessonsModule, MediaModule, QuizzesModule, CertificatesModule],
+  imports: [PrismaModule, UsersModule, AuthModule, CoursesModule, ModulesModule, LessonsModule, MediaModule, QuizzesModule, CertificatesModule, AdminModule],
   controllers: [AppController],
   providers: [AppService],
 })

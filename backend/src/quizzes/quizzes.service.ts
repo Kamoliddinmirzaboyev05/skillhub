@@ -41,7 +41,7 @@ export class QuizzesService {
     });
 
     // 4. Issue Certificate if passed
-    let certificate = null;
+    let certificate: any = null;
     if (passed) {
       certificate = await this.certificatesService.issueCertificate(quiz.courseId, studentId);
     }

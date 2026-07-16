@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 export default function Quiz() {
   const { id } = useParams();
@@ -23,6 +23,7 @@ export default function Quiz() {
   };
 
   const handleSubmit = async () => {
+    console.log('Submitting quiz attempt for id:', id);
     // In real app, make API call to /quizzes/:id/submit
     // const res = await api.post(`/quizzes/${id}/submit`, { answers: Object.entries(answers).map(([q, o]) => ({questionId: q, optionId: o})) });
     

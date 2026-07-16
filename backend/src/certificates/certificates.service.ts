@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { v4 as uuidv4 } from 'uuid';
-import * as PDFDocument from 'pdfkit';
+const PDFDocument = require('pdfkit');
 
 @Injectable()
 export class CertificatesService {
