@@ -3,6 +3,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAuthStore } from './store/useAuthStore';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Catalog from './pages/Catalog';
+import CourseDetail from './pages/CourseDetail';
+import Classroom from './pages/Classroom';
 
 const queryClient = new QueryClient();
 
@@ -24,16 +27,19 @@ export default function App() {
           
           <Route path="/" element={
             <ProtectedRoute>
-              <div className="p-8">
-                <h1 className="text-3xl font-bold">Xush kelibsiz, {user?.fullName}</h1>
-                <p className="mt-2 text-gray-600">Rol: {user?.role}</p>
-                <button 
-                  onClick={() => useAuthStore.getState().logout()}
-                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md"
-                >
-                  Chiqish
-                </button>
-              </div>
+              <Catalog />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/courses/:id" element={
+            <ProtectedRoute>
+              <CourseDetail />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/learn/:id" element={
+            <ProtectedRoute>
+              <Classroom />
             </ProtectedRoute>
           } />
           

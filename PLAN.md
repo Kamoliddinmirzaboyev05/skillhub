@@ -66,3 +66,4 @@ Qoida: bitta faza = bitta Antigravity iteratsiyasi. Faza tugamaguncha keyingisig
 | 2026-07-16 | 0 | PLAN.md yaratildi, Antigravity boshqaruvi boshlandi |
 | 2026-07-16 | 0 | Antigravity: tailwind/shadcn/zustand setup + Prisma o'rnatildi, GitHub'ga (skillhub.git) push qilindi. Endi schema.prisma modellari + JWT Auth/RBAC ustida ishlamoqda |
 | 2026-07-16 | 0→3 | Backend Auth (Prisma+JWT+RBAC) va 3 frontendda Login/Register (Zustand+RHF+zod) tugadi, push qilindi. Faza 3 (Mentor Course Builder)ga o'tildi |
+| 2026-07-16 | 3→1/2 | Course/Module/Lesson CRUD API + Mentor multi-step course builder (/courses/new) tugadi, push qilindi. Endi Marketplace (catalog/detail) + Student LMS (video player, Bunny.net DRM+watermark) ustida — Bunny.net key hali yo'q, env placeholder bilan yozilyapti |
